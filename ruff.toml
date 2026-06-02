@@ -1,0 +1,8 @@
+[format]
+quote-style = "single"
+
+[lint]
+select = ["Q"]
+
+[lint.flake8-quotes]
+inline-quotes = "single"

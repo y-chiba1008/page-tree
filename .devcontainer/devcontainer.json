@@ -10,8 +10,30 @@
         "mhutchie.git-graph",
         "ritwickdey.LiveServer",
         "mechatroner.rainbow-csv",
-        "google.gemini-cli-vscode-ide-companion"
-      ]
+        "google.gemini-cli-vscode-ide-companion",
+        // python
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        // python関連
+        "python.testing.pytestEnabled": true,
+        "python.testing.nosetestsEnabled": false,
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestArgs": [
+          "problems"
+        ],
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.envs.alwaysUseUv": true,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      }
     }
   },
   "containerEnv": {
@@ -19,5 +41,6 @@
     "REMOTE_CONTAINERS": "true",
     // ワークスペースを信頼済みにする
     "GEMINI_CLI_TRUST_WORKSPACE": "true"
-  }
+  },
+  "postCreateCommand": "mise trust & mise install & uv sync"
 }

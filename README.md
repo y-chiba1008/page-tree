@@ -1,2 +1,2 @@
-# templalte-mise-gemini
-mise, gemini導入済み開発環境用のテンプレート
+# page-tree
+指定したサイトのリンク先URLを再帰的に取得するツール
