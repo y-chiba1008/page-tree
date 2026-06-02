@@ -1,5 +1,7 @@
-{
-  "planning": {
-    "planDirectory": "./.gemini/plans"
+{  
+  "general": {
+      "plan": {
+        "directory": "documents/plans"
+      }
+    }
   }
-}
