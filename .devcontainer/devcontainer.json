@@ -1,0 +1,23 @@
+{
+  "name": "${localWorkspaceFolderBasename}",
+  "image": "ghcr.io/y-chiba1008/devcontainer-mise-gemini:latest",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // common
+        "adam-bender.commit-message-editor",
+        "hediet.vscode-drawio",
+        "mhutchie.git-graph",
+        "ritwickdey.LiveServer",
+        "mechatroner.rainbow-csv",
+        "google.gemini-cli-vscode-ide-companion"
+      ]
+    }
+  },
+  "containerEnv": {
+    // Gemini CLIが拡張機能Gemini CLI Companionと連携する為に必要
+    "REMOTE_CONTAINERS": "true",
+    // ワークスペースを信頼済みにする
+    "GEMINI_CLI_TRUST_WORKSPACE": "true"
+  }
+}
