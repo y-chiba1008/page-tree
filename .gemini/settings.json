@@ -1,7 +1,7 @@
 {  
   "general": {
-      "plan": {
-        "directory": "documents/plans"
-      }
+    "plan": {
+      "directory": "documents/plans"
     }
   }
+}
