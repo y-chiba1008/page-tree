@@ -14,6 +14,8 @@ class CrawlSettings:
     timeout: float
     delay: float
     ignore_robots: bool
+    include_regex: Optional[str] = None
+    exclude_regex: Optional[str] = None
 
 
 @dataclass(frozen=True)
