@@ -10,7 +10,7 @@ class RobotsManager:
 
     def __init__(self, user_agent: str = 'page-tree'):
         self.user_agent = user_agent
-        self.parsers = {}
+        self.parsers: dict[str, RobotFileParser] = {}
 
     async def _fetch_robots(
         self, client: httpx.AsyncClient, domain: str
@@ -26,12 +26,11 @@ class RobotsManager:
             if response.status_code == 200:
                 parser.parse(response.text.splitlines())
             else:
-                # robots.txtがない場合はすべて許可（Noneと判定されると困るため）
-                parser.set_default_crawl_delay(0)
-                parser.allow_all = True
+                # robots.txtがない場合はすべて許可されるため特別な処理は不要
+                pass
         except httpx.HTTPError:
-            # エラー時はすべて許可とみなす
-            parser.allow_all = True
+            # エラー時はすべて許可とみなす（何もしない＝デフォルト動作）
+            pass
 
         return parser
 
