@@ -14,11 +14,11 @@
     - ユニットテストの作成、実行、静的解析による品質担保。
 
 ## フェーズ 2: コアロジック (page_tree.core)
-- [ ] **スキャナー (`core/scanner.py`)**:
+- [x] **スキャナー (`core/scanner.py`)**:
     - `httpx.AsyncClient` を使用した `AsyncScanner` クラス。
     - ページを取得し `BeautifulSoup` でリンクを抽出するメソッド。
     - HTML以外のコンテンツタイプを無視する処理。
-- [ ] **クローラー (`core/crawler.py`)**:
+- [x] **クローラー (`core/crawler.py`)**:
     - `asyncio.Queue` を使用した `AsyncCrawler` クラス。
     - 訪問済みURLの `set` 管理。
     - セマフォによる並列数制御。
