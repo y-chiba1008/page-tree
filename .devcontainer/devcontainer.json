@@ -20,9 +20,6 @@
         "python.testing.pytestEnabled": true,
         "python.testing.nosetestsEnabled": false,
         "python.testing.unittestEnabled": false,
-        "python.testing.pytestArgs": [
-          "problems"
-        ],
         "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.envs.alwaysUseUv": true,
         "[python]": {
@@ -40,7 +37,9 @@
     // Gemini CLIが拡張機能Gemini CLI Companionと連携する為に必要
     "REMOTE_CONTAINERS": "true",
     // ワークスペースを信頼済みにする
-    "GEMINI_CLI_TRUST_WORKSPACE": "true"
+    "GEMINI_CLI_TRUST_WORKSPACE": "true",
+    // Googleアカウント認証時にブラウザを自動で開かない
+    "NO_BROWSER": "true"
   },
   "postCreateCommand": "mise trust & mise install & uv sync"
 }
