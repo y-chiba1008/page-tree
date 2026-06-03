@@ -43,40 +43,44 @@ class AsyncCrawler:
         ) as client:
             scanner = AsyncScanner(client)
 
-            # キューからURLを順次処理する
-            while not self.queue.empty():
-                url, depth = await self.queue.get()
+            # 全タスク管理用のワーカー群を作成
+            workers = [
+                asyncio.create_task(self._worker(scanner))
+                for _ in range(self.settings.concurrency)
+            ]
 
-                # 訪問済みチェック
-                if url in self.visited:
-                    self.queue.task_done()
-                    continue
+            # キューが空になるまで待機
+            await self.queue.join()
 
-                # 深度制限チェック
-                if (
-                    self.settings.max_depth is not None
-                    and depth > self.settings.max_depth
-                ):
-                    self.queue.task_done()
-                    continue
-
-                self.visited.add(url)
-
-                # スキャン実行（各URLごとに処理）
-                await self._crawl_page(scanner, url, depth)
-
-                self.queue.task_done()
+            # ワーカーのキャンセル
+            for worker in workers:
+                worker.cancel()
+            await asyncio.gather(*workers, return_exceptions=True)
 
         return self.visited
+
+    async def _worker(self, scanner: AsyncScanner) -> None:
+        """キューからURLを取り出して処理するワーカー関数。"""
+        while True:
+            url, depth = await self.queue.get()
+            try:
+                # 訪問済みチェック
+                if url not in self.visited:
+                    # 深度制限チェック
+                    if (
+                        self.settings.max_depth is not None
+                        and depth > self.settings.max_depth
+                    ):
+                        continue
+
+                    self.visited.add(url)
+                    await self._crawl_page(scanner, url, depth)
+            finally:
+                self.queue.task_done()
 
     async def _crawl_page(self, scanner: AsyncScanner, url: str, depth: int) -> None:
         """
         ページをクロールし、新しいURLをキューに追加します。
-
-        Args:
-            scanner: スキャナー。
-            url: クロールするURL。
-            depth: 現在の再帰深度。
         """
         # レート制限のための遅延処理
         domain = httpx.URL(url).host
@@ -88,11 +92,10 @@ class AsyncCrawler:
                 await asyncio.sleep(self.settings.delay - elapsed)
             self.last_request_time[domain] = time.monotonic()
 
-        async with self.semaphore:
-            logger.info(f'Crawling: {url} (depth: {depth})')
-            links = await scanner.extract_links(url)
-            for link in links:
-                if link not in self.visited:
-                    # TODO: robots.txt のチェックが必要
-                    # TODO: ルート配下かどうかのチェックを強化（start_urlsのドメインなど）
-                    await self.queue.put((link, depth + 1))
+        logger.info(f'Crawling: {url} (depth: {depth})')
+        links = await scanner.extract_links(url)
+        for link in links:
+            if link not in self.visited:
+                # TODO: robots.txt のチェックが必要
+                # TODO: ルート配下かどうかのチェックを強化
+                await self.queue.put((link, depth + 1))
