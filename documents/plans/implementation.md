@@ -1,16 +1,16 @@
 # 実装プラン: page-tree
 
 ## フェーズ 1: 基盤構築 (page_tree.core)
-- [ ] **データモデルの定義 (`core/models.py`)**:
+- [x] **データモデルの定義 (`core/models.py`)**:
     - `CrawlResult`: 見つかったリンクとメタデータを保持。
     - `CrawlSettings`: CLIからの設定値を保持。
-- [ ] **Robots.txt ハンドラ (`core/robots.py`)**:
+- [x] **Robots.txt ハンドラ (`core/robots.py`)**:
     - `robots.txt` の非同期取得。
     - `urllib.robotparser.RobotFileParser` のラッパー実装。
-- [ ] **URL ユーティリティ (`core/utils.py`)**:
+- [x] **URL ユーティリティ (`core/utils.py`)**:
     - 正規化（フラグメントの削除、適切な末尾スラッシュの処理など）。
     - 境界チェック（URLがルート配下にあるかどうかの判定）。
-- [ ] **基盤テストの作成と検証**:
+- [x] **基盤テストの作成と検証**:
     - ユニットテストの作成、実行、静的解析による品質担保。
 
 ## フェーズ 2: コアロジック (page_tree.core)
