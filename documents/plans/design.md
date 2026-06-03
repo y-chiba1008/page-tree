@@ -15,12 +15,14 @@
 ## 3. アーキテクチャ
 
 ### 3.1 コンポーネント
-- **CLI (cli.py)**: エントリポイント。ユーザー入力と設定のハンドリング。
-- **Crawler (crawler.py)**: 非同期クロールプロセス全体のオーケストレーション。
-- **Scanner (scanner.py)**: 個別のページの取得とリンクの抽出。
-- **Robots Manager (robots.py)**: `robots.txt` の取得・解析とアクセス許可判定。
-- **URL Filter (filter.py)**: 訪問すべきURLか、単に収集するだけのURLかを判定するロジック。
-- **Reporter (reporter.py)**: 出力形式の整形と保存。
+- **page_tree.core**: メインロジックを格納するパッケージ。
+  - **Crawler (crawler.py)**: 非同期クロールプロセス全体のオーケストレーション。
+  - **Scanner (scanner.py)**: 個別のページの取得とリンクの抽出。
+  - **Robots Manager (robots.py)**: `robots.txt` の取得・解析とアクセス許可判定。
+  - **URL Filter (filter.py)**: 訪問すべきURLか、単に収集するだけのURLかを判定するロジック。
+  - **Reporter (reporter.py)**: 出力形式の整形。
+- **page_tree.cli**: CLIアプリケーションの実装。`core` パッケージを利用する。
+  - **CLI (main.py)**: エントリポイント。ユーザー入力と設定のハンドリング。
 
 ### 3.2 データフロー
 1. CLIがルートURLとオプションを受け取る。
