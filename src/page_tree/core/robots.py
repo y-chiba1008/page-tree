@@ -1,0 +1,48 @@
+import httpx
+from urllib.robotparser import RobotFileParser
+from urllib.parse import urlparse
+
+
+class RobotsManager:
+    """
+    robots.txt の取得と解析を行うクラス。
+    """
+
+    def __init__(self, user_agent: str = 'page-tree'):
+        self.user_agent = user_agent
+        self.parsers = {}
+
+    async def _fetch_robots(
+        self, client: httpx.AsyncClient, domain: str
+    ) -> RobotFileParser:
+        """
+        指定されたドメインの robots.txt を非同期で取得します。
+        """
+        robots_url = f'{domain}/robots.txt'
+        parser = RobotFileParser()
+
+        try:
+            response = await client.get(robots_url, follow_redirects=True)
+            if response.status_code == 200:
+                parser.parse(response.text.splitlines())
+            else:
+                # robots.txtがない場合はすべて許可（Noneと判定されると困るため）
+                parser.set_default_crawl_delay(0)
+                parser.allow_all = True
+        except httpx.HTTPError:
+            # エラー時はすべて許可とみなす
+            parser.allow_all = True
+
+        return parser
+
+    async def can_fetch(self, client: httpx.AsyncClient, url: str) -> bool:
+        """
+        URLへのアクセスが許可されているか判定します。
+        """
+        parsed = urlparse(url)
+        domain = f'{parsed.scheme}://{parsed.netloc}'
+
+        if domain not in self.parsers:
+            self.parsers[domain] = await self._fetch_robots(client, domain)
+
+        return self.parsers[domain].can_fetch(self.user_agent, url)
