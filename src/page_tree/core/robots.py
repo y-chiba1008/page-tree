@@ -26,11 +26,11 @@ class RobotsManager:
             if response.status_code == 200:
                 parser.parse(response.text.splitlines())
             else:
-                # robots.txtがない場合はすべて許可されるため特別な処理は不要
-                pass
+                # 404などの場合は全て許可とみなす
+                parser.parse([])
         except httpx.HTTPError:
-            # エラー時はすべて許可とみなす（何もしない＝デフォルト動作）
-            pass
+            # エラー時も全て許可とみなす
+            parser.parse([])
 
         return parser
 

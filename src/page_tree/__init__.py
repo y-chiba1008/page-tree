@@ -1,2 +1,3 @@
-def main() -> None:
-    print('Hello from page-tree!')
+from page_tree.cli.main import main
+
+__all__ = ['main']

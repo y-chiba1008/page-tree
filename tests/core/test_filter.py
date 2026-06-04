@@ -1,4 +1,3 @@
-import httpx
 import pytest
 import pytest_httpx
 
@@ -20,10 +19,10 @@ async def test_crawler_url_filtering(httpx_mock: pytest_httpx.HTTPXMock) -> None
         exclude_regex=r'example\.com/exclude',  # exclude フィルタ
     )
 
-    # 構造: start -> include_page (OK)
-    #               -> exclude_page (NG)
+    # 構造: / -> include_page (OK)
+    #            -> exclude_page (NG)
     httpx_mock.add_response(
-        url='http://example.com/start',
+        url='http://example.com/',
         text='<a href="http://example.com/include">Include</a> <a href="http://example.com/exclude">Exclude</a>',
         headers={'Content-Type': 'text/html'},
     )
@@ -48,9 +47,9 @@ async def test_crawler_url_filtering(httpx_mock: pytest_httpx.HTTPXMock) -> None
     )
 
     crawler = AsyncCrawler(settings)
-    visited = await crawler.run(['http://example.com/start'])
+    await crawler.run(['http://example.com/'])
 
-    assert 'http://example.com/start' in visited
-    assert 'http://example.com/include' in visited
-    assert 'http://example.com/exclude' not in visited
-    assert 'http://example.com/other' in visited
+    assert 'http://example.com/' in crawler.visited
+    assert 'http://example.com/include' in crawler.visited
+    assert 'http://example.com/exclude' not in crawler.visited
+    assert 'http://example.com/other' in crawler.visited
